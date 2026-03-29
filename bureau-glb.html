@@ -1,0 +1,1345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Crisis Negotiation & Diplomacy Bureau — 3D Models</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🦅</text></svg>">
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700&family=Crimson+Pro:ital,wght@0,300;0,400;1,300&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+html,body{width:100%;height:100%;overflow:hidden;background:#02060f}
+#c{display:block;position:fixed;inset:0;z-index:0}
+#ui{position:fixed;inset:0;z-index:10;pointer-events:none}
+
+/* ── LOADING SCREEN ── */
+#loading{
+  position:fixed;inset:0;z-index:100;
+  background:#02060f;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  transition:opacity .8s;
+}
+#loading h2{
+  font-family:'Cinzel',serif;font-size:1.1em;letter-spacing:.22em;
+  color:#c9a050;text-transform:uppercase;margin-bottom:28px;
+}
+#loading-bar-wrap{
+  width:260px;height:3px;background:rgba(201,160,80,.15);border-radius:2px;margin-bottom:14px;
+}
+#loading-bar{
+  height:100%;width:0%;background:#c9a050;border-radius:2px;transition:width .3s;
+}
+#loading-status{
+  font-family:'Cinzel',serif;font-size:.55em;letter-spacing:.18em;
+  color:rgba(201,160,80,.4);text-transform:uppercase;
+}
+#loading-animals{
+  display:flex;gap:14px;margin-top:22px;
+}
+.la-item{
+  text-align:center;
+  font-size:.55em;
+  letter-spacing:.1em;
+  font-family:'Cinzel',serif;
+  text-transform:uppercase;
+  transition:color .3s;
+  color:rgba(201,160,80,.25);
+}
+.la-item.done{color:#c9a050;}
+.la-item .la-icon{font-size:1.6em;display:block;margin-bottom:4px;filter:grayscale(1) opacity(.3);transition:filter .3s;}
+.la-item.done .la-icon{filter:grayscale(0) opacity(1);}
+
+/* ── TOP BAR ── */
+#topbar{
+  position:absolute;top:0;left:0;right:0;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:18px 32px;
+  background:linear-gradient(180deg,rgba(2,6,15,.9) 0%,transparent 100%);
+}
+#bureau-logo{font-family:'Cinzel',serif;font-size:.85em;letter-spacing:.22em;color:#c9a050;text-transform:uppercase;font-weight:600;}
+#slide-info{font-family:'Cinzel',serif;font-size:.65em;letter-spacing:.18em;color:rgba(201,160,80,.45);}
+
+/* ── PANEL ── */
+#panel{
+  position:absolute;right:0;top:0;bottom:0;width:360px;
+  background:linear-gradient(270deg,rgba(2,6,15,.97) 55%,transparent 100%);
+  display:flex;flex-direction:column;justify-content:center;
+  padding:80px 30px 80px 55px;
+  opacity:0;transition:opacity .5s;pointer-events:all;overflow-y:auto;
+}
+#panel.show{opacity:1}
+#panel h2{font-family:'Cinzel',serif;font-size:1.5em;font-weight:700;color:#c9a050;letter-spacing:.08em;line-height:1.15;margin-bottom:6px;}
+#panel .role{font-family:'Cinzel',serif;font-size:.55em;letter-spacing:.2em;color:#4a9f7a;border:1px solid rgba(74,159,122,.4);display:inline-block;padding:3px 10px;margin-bottom:18px;text-transform:uppercase;}
+#panel .bar{width:36px;height:2px;background:#c9a050;margin-bottom:18px}
+#panel p{font-family:'Crimson Pro',serif;font-size:.95em;line-height:1.75;color:rgba(230,215,185,.82);font-weight:300;margin-bottom:14px;}
+#panel .pills{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:16px}
+#panel .pill{font-family:'Crimson Pro',serif;font-size:.75em;background:rgba(74,120,165,.15);border:1px solid rgba(74,120,165,.4);color:#88bdd8;padding:3px 10px;border-radius:20px;}
+#panel .label{font-family:'Cinzel',serif;font-size:.5em;letter-spacing:.18em;color:rgba(201,160,80,.6);text-transform:uppercase;margin-bottom:6px;display:block;}
+
+/* ── MEMBERS LEFT ── */
+#members{
+  position:absolute;left:0;top:0;bottom:0;width:220px;
+  background:linear-gradient(90deg,rgba(2,6,15,.95) 60%,transparent 100%);
+  display:flex;flex-direction:column;justify-content:center;
+  padding:80px 36px 80px 18px;
+  opacity:0;transition:opacity .5s;pointer-events:all;
+}
+#members.show{opacity:1}
+#members h3{font-family:'Cinzel',serif;font-size:.6em;letter-spacing:.2em;color:rgba(201,160,80,.5);text-transform:uppercase;margin-bottom:14px;}
+.mbtn{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:4px;cursor:pointer;transition:all .2s;margin-bottom:3px;border:1px solid transparent;}
+.mbtn:hover{background:rgba(201,160,80,.07);border-color:rgba(201,160,80,.18)}
+.mbtn.act{background:rgba(201,160,80,.1);border-color:rgba(201,160,80,.35)}
+.mbtn .mico{font-size:1.3em}
+.mbtn .mname{font-family:'Cinzel',serif;font-size:.6em;color:#c9a050;letter-spacing:.07em;text-transform:uppercase;}
+.mbtn .mrole{font-family:'Crimson Pro',serif;font-size:.65em;color:rgba(230,215,185,.4);margin-top:1px;}
+
+/* ── TITLE ── */
+#title-over{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;transition:opacity .6s;}
+#title-over h1{font-family:'Cinzel',serif;font-size:3em;font-weight:700;color:#c9a050;letter-spacing:.1em;line-height:1.1;text-shadow:0 0 60px rgba(201,160,80,.35);}
+#title-over .sub{font-family:'Crimson Pro',serif;font-size:1.05em;color:rgba(230,215,185,.45);letter-spacing:.18em;margin-top:12px;text-transform:uppercase;}
+#title-over .tag{font-family:'Crimson Pro',serif;font-size:.9em;font-style:italic;color:rgba(201,160,80,.5);margin-top:18px;}
+
+/* ── TOOLTIP ── */
+#tip{position:fixed;background:rgba(2,6,15,.92);border:1px solid rgba(201,160,80,.45);border-radius:5px;padding:7px 14px;font-family:'Cinzel',serif;font-size:.65em;color:#c9a050;letter-spacing:.1em;pointer-events:none;display:none;z-index:50;white-space:nowrap;}
+
+/* ── NAV ── */
+#bottom{position:absolute;bottom:0;left:0;right:0;display:flex;align-items:center;justify-content:center;padding:0 32px 26px;background:linear-gradient(0deg,rgba(2,6,15,.85) 0%,transparent 100%);pointer-events:all;}
+#dots{display:flex;gap:8px;align-items:center}
+.dot{width:7px;height:7px;border-radius:50%;background:rgba(201,160,80,.2);border:1px solid rgba(201,160,80,.35);cursor:pointer;transition:all .3s;}
+.dot.on{background:#c9a050;box-shadow:0 0 8px rgba(201,160,80,.7);transform:scale(1.4)}
+.dot:hover{background:rgba(201,160,80,.5)}
+#arrows{position:absolute;bottom:20px;right:32px;display:flex;gap:8px;pointer-events:all;}
+.arr-btn{width:38px;height:38px;border-radius:50%;border:1px solid rgba(201,160,80,.35);background:rgba(2,6,15,.7);color:#c9a050;font-size:1em;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.arr-btn:hover{background:rgba(201,160,80,.15);border-color:#c9a050;box-shadow:0 0 14px rgba(201,160,80,.3)}
+
+/* ── SPIN HINT ── */
+#drag-hint{position:absolute;bottom:72px;left:50%;transform:translateX(-50%);font-family:'Cinzel',serif;font-size:.5em;letter-spacing:.18em;color:rgba(201,160,80,.3);text-transform:uppercase;pointer-events:none;transition:opacity 1s;}
+
+/* Table, cards etc */
+.wtable{width:100%;border-collapse:collapse;margin-top:8px;font-family:'Crimson Pro',serif}
+.wtable th{font-family:'Cinzel',serif;font-size:.5em;letter-spacing:.12em;color:#c9a050;padding:5px 6px;border-bottom:1px solid rgba(201,160,80,.25);text-align:left;font-weight:400}
+.wtable td{padding:6px 6px;font-size:.78em;border-bottom:1px solid rgba(255,255,255,.04);color:rgba(230,215,185,.8);line-height:1.4;vertical-align:top}
+.wtable .rd{color:#e07070}.wtable .gn{color:#7ec8a0}
+.hcard{border-radius:6px;padding:14px;margin-bottom:10px}
+.hy{background:rgba(74,154,122,.07);border:1px solid rgba(74,154,122,.3)}
+.hn{background:rgba(224,112,112,.07);border:1px solid rgba(224,112,112,.3)}
+.hcard .ht{font-family:'Cinzel',serif;font-size:.52em;letter-spacing:.18em;text-transform:uppercase;margin-bottom:5px}
+.hy .ht{color:#7ec8a0}.hn .ht{color:#e07070}
+.hcard .hn2{font-family:'Cinzel',serif;font-size:.75em;color:#c9a050;letter-spacing:.07em;margin-bottom:5px}
+.hcard .hd{font-family:'Crimson Pro',serif;font-size:.82em;color:rgba(230,215,185,.75);line-height:1.5}
+.vgrid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px}
+.vcard{background:rgba(201,160,80,.06);border:1px solid rgba(201,160,80,.18);border-radius:6px;padding:12px;text-align:center}
+.vcard .vi{font-size:1.5em;display:block;margin-bottom:5px}
+.vcard .vl{font-family:'Cinzel',serif;font-size:.52em;color:#c9a050;letter-spacing:.12em}
+
+/* ── EXPANSION GRID ── */
+.exp-grid{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:12px}
+.exp-card{border-radius:6px;padding:11px 12px;border:1px solid rgba(201,160,80,.15);background:rgba(201,160,80,.04)}
+.exp-card .ec-tag{font-family:'Cinzel',serif;font-size:.44em;letter-spacing:.16em;text-transform:uppercase;margin-bottom:4px;display:block}
+.exp-card .ec-name{font-family:'Cinzel',serif;font-size:.62em;color:#c9a050;letter-spacing:.07em;margin-bottom:3px}
+.exp-card .ec-desc{font-family:'Crimson Pro',serif;font-size:.72em;color:rgba(230,215,185,.6);line-height:1.4}
+.phase-badge{display:inline-block;font-family:'Cinzel',serif;font-size:.44em;letter-spacing:.14em;text-transform:uppercase;padding:2px 8px;border-radius:10px;margin-bottom:8px}
+.phase-1{background:rgba(74,159,122,.15);border:1px solid rgba(74,159,122,.35);color:#4a9f7a}
+.phase-2{background:rgba(74,120,200,.15);border:1px solid rgba(74,120,200,.35);color:#4a88d8}
+.phase-3{background:rgba(160,80,200,.15);border:1px solid rgba(160,80,200,.35);color:#b060e0}
+.stat-row{display:flex;align-items:center;gap:10px;padding:6px 0;border-bottom:1px solid rgba(255,255,255,.04)}
+.stat-row:last-child{border-bottom:none}
+.stat-icon{font-size:1.1em;flex-shrink:0;width:22px;text-align:center}
+.stat-label{font-family:'Cinzel',serif;font-size:.5em;letter-spacing:.12em;color:rgba(201,160,80,.6);text-transform:uppercase;min-width:70px}
+.stat-val{font-family:'Crimson Pro',serif;font-size:.8em;color:rgba(230,215,185,.85)}
+</style>
+</head>
+<body>
+
+<!-- LOADING SCREEN -->
+<div id="loading">
+  <h2>Loading 3D Models</h2>
+  <div id="loading-bar-wrap"><div id="loading-bar"></div></div>
+  <div id="loading-status">Initialising scene…</div>
+  <div id="loading-animals">
+    <div class="la-item" id="la-dolphin"><span class="la-icon">🐬</span>Dolphin</div>
+    <div class="la-item" id="la-owl"><span class="la-icon">🦉</span>Owl</div>
+    <div class="la-item" id="la-elephant"><span class="la-icon">🐘</span>Elephant</div>
+    <div class="la-item" id="la-crow"><span class="la-icon">🐦</span>Crow</div>
+    <div class="la-item" id="la-octopus"><span class="la-icon">🐙</span>Octopus</div>
+    <div class="la-item" id="la-eagle"><span class="la-icon">🦅</span>Eagle</div>
+    <div class="la-item" id="la-bee"><span class="la-icon">🐝</span>Bee</div>
+  </div>
+</div>
+
+<canvas id="c"></canvas>
+<div id="ui">
+  <div id="topbar">
+    <div id="bureau-logo">Crisis Negotiation &amp; Diplomacy Bureau</div>
+    <div id="slide-info">01 / 17</div>
+
+  </div>
+  <div id="title-over">
+    <h1>Crisis Negotiation<br>&amp; Diplomacy<br>Bureau</h1>
+    <div class="sub">Specialist Animal Task Force</div>
+    <div class="tag">"De-escalate · Negotiate · Resolve"</div>
+  </div>
+  <div id="members"><h3>The Team</h3><div id="mlist"></div></div>
+  <div id="panel"><div id="pcontent"></div></div>
+  <div id="tip"></div>
+  <div id="drag-hint">Drag to rotate · Scroll to zoom</div>
+  <div id="bottom"><div id="dots"></div></div>
+  <div id="arrows">
+    <button class="arr-btn" id="bprev">&#8592;</button>
+    <button class="arr-btn" id="bnext">&#8594;</button>
+  </div>
+</div>
+
+<!-- Three.js r128 + GLTFLoader + OrbitControls via CDN -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+
+<script>
+// ═══════════════════════════════════════════════
+// TEAM DATA
+// ═══════════════════════════════════════════════
+const TEAM = [
+  { id:'dolphin', emoji:'🐬', name:'Dolphin',   role:'Lead Negotiator',
+    file:'dolphin.glb',  scale:3.5,  col:0x1a8fbf,
+    strengths:['Advanced communication','Emotional intelligence','Social bonding'],
+    mission:'Leads all hostage negotiations. Reads emotional cues in real time, builds trust with opposing parties, and maintains calm under extreme pressure.',
+    why:'Dolphins use complex communication systems and deep empathy — essential for crisis de-escalation.' },
+  { id:'owl',     emoji:'🦉', name:'Owl',       role:'Intelligence Analyst',
+    file:'owl.glb',      scale:4.5,  col:0x8a6030,
+    strengths:['Silent observation','Night vision','Exceptional hearing'],
+    mission:'Gathers intelligence without alerting suspects. Monitors from concealed positions and ensures the team always acts on precise information.',
+    why:'Owls are built for quiet, accurate observation — the backbone of any successful crisis response.' },
+  { id:'elephant',emoji:'🐘', name:'Elephant',  role:'Operations Coordinator',
+    file:'elephant.glb', scale:3.0,  col:0x708090,
+    strengths:['Exceptional memory','Empathy','Stability under chaos'],
+    mission:'Tracks long-term strategy and past case patterns. Guides ethical decisions and keeps the team grounded during chaotic situations.',
+    why:'Elephants never forget — pattern recognition and emotional steadiness save lives in the field.' },
+  { id:'crow',    emoji:'🐦', name:'Crow',      role:'Problem Solver',
+    file:'crow.glb',     scale:2.5,  col:0x2a2a50,
+    strengths:['High intelligence','Tool use','Creative improvisation'],
+    mission:'Solves unexpected crises in real time. Designs creative solutions when standard protocols fail and rapid innovation is critical.',
+    why:'Crows are proven multi-step tool-users under pressure — among the smartest animals on Earth.' },
+  { id:'octopus', emoji:'🐙', name:'Octopus',   role:'Infiltration Specialist',
+    file:'octopus.glb',  scale:1.1,  col:0x7a1a60,
+    strengths:['Camouflage mastery','Extreme flexibility','8-arm multitasking'],
+    mission:'Handles all stealth operations — infiltrating tight spaces, evading detection, executing high-risk rescues nobody else can reach.',
+    why:'No animal matches the octopus for disguise and physical adaptability in hostile environments.' },
+  { id:'eagle',   emoji:'🦅', name:'Eagle',     role:'Surveillance Leader',
+    file:'eagle.glb',    scale:4.0,  col:0xb07020,
+    strengths:['Long-distance vision','Aerial speed','360° field of view'],
+    mission:'Monitors from above, providing real-time aerial intelligence. Detects approaching threats before they escalate.',
+    why:'Eagles see 5× farther than humans — the ultimate early-warning system for any field operation.' },
+  { id:'bee',     emoji:'🐝', name:'Honeybee',  role:'Logistics Coordinator',
+    file:'honeybee.glb', scale:1.4,  col:0xd4a020,
+    strengths:['Precision teamwork','Waggle-dance comms','Operational efficiency'],
+    mission:'Manages all communication systems and coordinates resources. Ensures every team member gets the right intel at the right moment.',
+    why:'Honeybees run nature\'s most efficient organizations — perfect for coordinating a high-pressure bureau.' },
+];
+
+// ── Model positions in the scene circle ──
+const POSITIONS = [
+  [ 0,   0,  4],  // dolphin — center front
+  [-12,  0,  4],  // owl — far left
+  [ 12,  0,  4],  // elephant — far right
+  [-7,   2, -4],  // crow — raised, mid left back
+  [ 7,   0, -4],  // octopus — mid right back
+  [ 0,   3, -10], // eagle — raised high, far back center
+  [ 0,   0,  12], // bee — far front
+];
+
+// ═══════════════════════════════════════════════
+// SLIDES — now 17 total (added 'expansion')
+// ═══════════════════════════════════════════════
+const SLIDES = [
+  {t:'title'},{t:'team'},
+  ...TEAM.map((_,i)=>({t:'animal',i})),
+  {t:'hiring'},{t:'workspace'},{t:'weaknesses'},{t:'future'},{t:'expansion'},{t:'conclusion'}
+];
+
+// ═══════════════════════════════════════════════
+// ENGINE VARS
+// ═══════════════════════════════════════════════
+let slide=0, scene, cam, renderer, clock;
+let controls, raycaster=new THREE.Raycaster(), mouse=new THREE.Vector2();
+let animalGroups=[], building, skybox, nebulaLayers=[], shootingStars=[];
+let hovered=null;
+let camTarget={x:0,y:2,z:18}, camLook={x:0,y:0,z:0};
+let loadedCount=0, totalModels=TEAM.length;
+let fallbackMeshes={};
+
+// ═══════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════
+function init(){
+  renderer = new THREE.WebGLRenderer({canvas:document.getElementById('c'),antialias:true,alpha:true});
+  renderer.setPixelRatio(Math.min(devicePixelRatio,2));
+  renderer.setSize(innerWidth,innerHeight);
+  renderer.shadowMap.enabled=true;
+  renderer.shadowMap.type=THREE.PCFSoftShadowMap;
+  renderer.toneMapping=THREE.ACESFilmicToneMapping;
+  renderer.toneMappingExposure=1.3;
+  renderer.outputEncoding=THREE.sRGBEncoding;
+
+  scene = new THREE.Scene();
+  scene.fog = new THREE.FogExp2(0x02060f, 0.025);
+
+  cam = new THREE.PerspectiveCamera(55, innerWidth/innerHeight, 0.1, 300);
+  cam.position.set(0,4,26);
+
+  controls = new THREE.OrbitControls(cam, renderer.domElement);
+  controls.enableDamping=true;
+  controls.dampingFactor=0.06;
+  controls.minDistance=6;
+  controls.maxDistance=55;
+  controls.maxPolarAngle=Math.PI*.65;
+  controls.target.set(0,1,0);
+  controls.autoRotate=true;
+  controls.autoRotateSpeed=0.4;
+
+  clock = new THREE.Clock();
+
+  addLights();
+  makeSkybox();
+  makeParticles();
+  makeBuilding();
+  loadAllModels();
+
+  addEventListener('resize', onResize);
+  renderer.domElement.addEventListener('mousemove', onMove);
+  renderer.domElement.addEventListener('click', onClick);
+
+  loop();
+}
+
+// ═══════════════════════════════════════════════
+// LIGHTS
+// ═══════════════════════════════════════════════
+function addLights(){
+  scene.add(new THREE.AmbientLight(0x1a2535, 1.0));
+
+  const sun = new THREE.DirectionalLight(0xffd090, 2.0);
+  sun.position.set(15,25,10);
+  sun.castShadow=true;
+  sun.shadow.mapSize.width=sun.shadow.mapSize.height=2048;
+  sun.shadow.camera.near=1; sun.shadow.camera.far=100;
+  sun.shadow.camera.left=sun.shadow.camera.bottom=-30;
+  sun.shadow.camera.right=sun.shadow.camera.top=30;
+  scene.add(sun);
+
+  const fill = new THREE.DirectionalLight(0x4060a0, .7);
+  fill.position.set(-12, 8, -8);
+  scene.add(fill);
+
+  const gold = new THREE.PointLight(0xc9a050, 2, 40);
+  gold.position.set(0, 8, 3);
+  scene.add(gold);
+}
+
+// ═══════════════════════════════════════════════
+// LOAD ALL GLB MODELS
+// ═══════════════════════════════════════════════
+function loadAllModels(){
+  const loader = new THREE.GLTFLoader();
+  setStatus('Loading models from /models/ …');
+
+  TEAM.forEach((member, i)=>{
+    const grp = new THREE.Group();
+    grp.position.set(...POSITIONS[i]);
+    grp.userData = { isAnimal:true, idx:i, phase:Math.random()*Math.PI*2, baseY:POSITIONS[i][1] };
+    scene.add(grp);
+    animalGroups.push(grp);
+
+    loader.load(
+      `models/${member.file}`,
+      (gltf) => {
+        const model = gltf.scene;
+        grp.add(model);
+        model.updateMatrixWorld(true);
+
+        const box = new THREE.Box3();
+        model.traverse(ch => {
+          if(ch.isMesh && ch.geometry){
+            ch.updateWorldMatrix(true, false);
+            const meshBox = new THREE.Box3().setFromBufferAttribute(ch.geometry.attributes.position);
+            meshBox.applyMatrix4(ch.matrixWorld);
+            box.union(meshBox);
+          }
+        });
+
+        const size = box.getSize(new THREE.Vector3());
+        const maxDim = Math.max(size.x, size.y, size.z);
+        const desiredSize = 2.2 * member.scale;
+
+        if(maxDim > 0.0001){
+          const s = desiredSize / maxDim;
+          model.scale.setScalar(s);
+          model.position.set(0, 0, 0);
+          model.updateMatrixWorld(true);
+
+          const box2 = new THREE.Box3();
+          model.traverse(ch => {
+            if(ch.isMesh && ch.geometry){
+              ch.updateWorldMatrix(true, false);
+              const mb = new THREE.Box3().setFromBufferAttribute(ch.geometry.attributes.position);
+              mb.applyMatrix4(ch.matrixWorld);
+              box2.union(mb);
+            }
+          });
+
+          const modelHeight = box2.max.y - box2.min.y;
+          model.position.y = -box2.min.y + 0.05;
+          if(model.position.y > modelHeight + 1) model.position.y = modelHeight * 0.5;
+          if(model.position.y < 0) model.position.y = 0.1;
+        } else {
+          model.scale.setScalar(desiredSize * 0.5);
+          model.position.y = 0.5;
+        }
+
+        model.traverse(ch=>{
+          if(ch.isMesh){
+            ch.castShadow=true;
+            ch.receiveShadow=true;
+            const mats = Array.isArray(ch.material) ? ch.material : [ch.material];
+            mats.forEach(m=>{ if(m){ m.envMapIntensity=0.8; m.needsUpdate=true; } });
+          }
+        });
+
+        grp.userData.model = model;
+
+        if(member.id === 'dolphin'){ model.rotation.z = Math.PI * 0.15; model.rotation.y = Math.PI * 0.3; }
+        if(member.id === 'eagle'){ model.rotation.y = Math.PI; }
+        if(member.id === 'crow'){ model.rotation.y = Math.PI * 0.8; }
+
+        if(gltf.animations && gltf.animations.length > 0){
+          const mixer = new THREE.AnimationMixer(model);
+          mixer.clipAction(gltf.animations[0]).play();
+          grp.userData.mixer = mixer;
+        }
+
+        onModelLoaded(member.id);
+      },
+      null,
+      (error) => {
+        console.warn(`[${member.id}] GLB load failed — using fallback`, error);
+        const fallback = makeFallback(member);
+        grp.add(fallback);
+        grp.userData.model = fallback;
+        onModelLoaded(member.id);
+      }
+    );
+
+    const platMat = new THREE.MeshPhongMaterial({color:0x0d1828,emissive:0x0a1835,emissiveIntensity:.5,transparent:true,opacity:.85});
+    const plat = new THREE.Mesh(new THREE.CylinderGeometry(1.6,1.8,0.18,24), platMat);
+    plat.position.y=-1.6; plat.receiveShadow=true;
+    grp.add(plat);
+
+    const halo = new THREE.Mesh(
+      new THREE.TorusGeometry(1.9,.045,8,50),
+      new THREE.MeshBasicMaterial({color:member.col, transparent:true, opacity:.4})
+    );
+    halo.rotation.x=Math.PI/2; halo.position.y=-1.5;
+    grp.add(halo);
+    grp.userData.halo = halo;
+
+    const pl = new THREE.PointLight(member.col, 1.5, 9);
+    pl.position.y=0.5;
+    grp.add(pl);
+    grp.userData.light = pl;
+  });
+}
+
+function onModelLoaded(id){
+  loadedCount++;
+  document.getElementById(`la-${id}`)?.classList.add('done');
+  const pct = Math.round((loadedCount/totalModels)*100);
+  document.getElementById('loading-bar').style.width = pct+'%';
+  setStatus(`Loaded ${loadedCount} / ${totalModels} models…`);
+
+  if(loadedCount >= totalModels){
+    setStatus('All models ready!');
+    setTimeout(()=>{
+      const ls = document.getElementById('loading');
+      ls.style.opacity='0';
+      setTimeout(()=>ls.style.display='none', 800);
+      buildDots();
+      go(0);
+    }, 600);
+  }
+}
+
+function setStatus(txt){ document.getElementById('loading-status').textContent=txt; }
+
+function makeFallback(member){
+  const geos = {
+    dolphin: new THREE.SphereGeometry(.9,16,12),
+    owl:     new THREE.ConeGeometry(.7,1.6,8),
+    elephant:new THREE.BoxGeometry(1.4,1.2,1.2),
+    crow:    new THREE.OctahedronGeometry(.9,1),
+    octopus: new THREE.TorusGeometry(.7,.3,12,24),
+    eagle:   new THREE.OctahedronGeometry(1.0,0),
+    bee:     new THREE.DodecahedronGeometry(.85,0),
+  };
+  const geo = geos[member.id] || new THREE.SphereGeometry(.9,12,10);
+  const mat = new THREE.MeshPhongMaterial({
+    color:member.col, emissive:member.col, emissiveIntensity:.3,
+    shininess:80, specular:0x444444, wireframe:false
+  });
+  const mesh = new THREE.Mesh(geo,mat);
+  mesh.castShadow=true;
+  const wf = new THREE.Mesh(geo.clone(), new THREE.MeshBasicMaterial({color:member.col,wireframe:true,opacity:.18,transparent:true}));
+  wf.scale.setScalar(1.06);
+  const g = new THREE.Group();
+  g.add(mesh); g.add(wf);
+  g.position.y=0.3;
+  return g;
+}
+
+// ═══════════════════════════════════════════════
+// NEBULA SKYBOX
+// ═══════════════════════════════════════════════
+function makeSkybox(){
+  const W=2048,H=1024;
+  const cv=document.createElement('canvas');cv.width=W;cv.height=H;
+  const ctx=cv.getContext('2d');
+
+  const bg=ctx.createLinearGradient(0,0,0,H);
+  bg.addColorStop(0,'#000510');bg.addColorStop(.45,'#02050e');bg.addColorStop(1,'#010208');
+  ctx.fillStyle=bg;ctx.fillRect(0,0,W,H);
+
+  function nebCloud(cx,cy,r,col,op,n){
+    for(let i=0;i<n;i++){
+      const ox=(Math.random()-.5)*r,oy=(Math.random()-.5)*r*.6;
+      const rr=r*.4+Math.random()*r*.5;
+      const g=ctx.createRadialGradient(cx+ox,cy+oy,0,cx+ox,cy+oy,rr);
+      g.addColorStop(0,col+(op*(Math.random()*.5+.6))+')');
+      g.addColorStop(1,col+'0)');
+      ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+    }
+  }
+  nebCloud(380,280,380,'rgba(80,15,200,',  .055,20);
+  nebCloud(560,200,280,'rgba(130,30,240,', .040,14);
+  nebCloud(1580,260,320,'rgba(10,130,210,',.050,18);
+  nebCloud(1720,180,220,'rgba(20,160,230,',.035,12);
+  nebCloud(960,700,280,'rgba(190,25,110,', .048,16);
+  nebCloud(820,620,200,'rgba(220,40,130,', .030,12);
+  nebCloud(720,500,180,'rgba(210,150,20,', .030,10);
+  nebCloud(1300,580,160,'rgba(30,200,160,',.028,10);
+
+  [[80,'rgba(30,200,150,',.04],[260,'rgba(70,90,230,',.035],[520,'rgba(160,25,210,',.03]].forEach(([y,c,o])=>{
+    const g=ctx.createLinearGradient(0,y-100,0,y+100);
+    g.addColorStop(0,c+'0)');g.addColorStop(.5,c+o+')');g.addColorStop(1,c+'0)');
+    ctx.fillStyle=g;ctx.fillRect(0,y-100,W,200);
+  });
+
+  [[460,280,150,'rgba(160,60,255,', .12],[1580,250,120,'rgba(20,190,245,',.10],[960,680,100,'rgba(245,50,155,',.10],[730,490,80,'rgba(225,165,25,',.08],[1220,390,70,'rgba(50,210,170,',.08]].forEach(([x,y,r,c,o])=>{
+    const g=ctx.createRadialGradient(x,y,0,x,y,r);
+    g.addColorStop(0,c+(o*2.5)+')');g.addColorStop(.3,c+o+')');g.addColorStop(1,c+'0)');
+    ctx.fillStyle=g;ctx.fillRect(0,0,W,H);
+    ctx.beginPath();ctx.arc(x,y,r*.07,0,Math.PI*2);ctx.fillStyle=c+'1)';ctx.fill();
+  });
+
+  ctx.save();ctx.translate(1024,512);ctx.rotate(-.28);
+  const mw=ctx.createLinearGradient(0,-150,0,150);
+  mw.addColorStop(0,'rgba(80,90,190,0)');mw.addColorStop(.5,'rgba(80,90,190,.08)');mw.addColorStop(1,'rgba(80,90,190,0)');
+  ctx.fillStyle=mw;ctx.fillRect(-1200,-150,2400,300);
+  for(let i=0;i<4500;i++){
+    const x=(Math.random()-.5)*2400,y=(Math.random()-.5)*210*(1+Math.abs(x/900));
+    ctx.beginPath();ctx.arc(x,y,Math.random()*.55+.04,0,Math.PI*2);
+    ctx.fillStyle=`rgba(215,225,255,${Math.random()*.28+.04})`;ctx.fill();
+  }
+  ctx.restore();
+
+  for(let i=0;i<6000;i++){
+    ctx.beginPath();ctx.arc(Math.random()*W,Math.random()*H,Math.random()*.55+.04,0,Math.PI*2);
+    ctx.fillStyle=`rgba(255,255,255,${Math.random()*.22+.04})`;ctx.fill();
+  }
+  const sc=['rgba(255,255,255,','rgba(180,215,255,','rgba(255,238,200,','rgba(200,255,220,','rgba(255,200,200,'];
+  for(let i=0;i<1400;i++){
+    ctx.beginPath();ctx.arc(Math.random()*W,Math.random()*H,Math.random()*1.1+.3,0,Math.PI*2);
+    ctx.fillStyle=sc[i%5]+(Math.random()*.5+.2)+')';ctx.fill();
+  }
+  for(let i=0;i<120;i++){
+    const x=Math.random()*W,y=Math.random()*H,r=Math.random()*2.2+1;
+    const c=sc[Math.floor(Math.random()*sc.length)];
+    const g=ctx.createRadialGradient(x,y,0,x,y,r*8);
+    g.addColorStop(0,c+'1)');g.addColorStop(.18,c+'.45)');g.addColorStop(1,c+'0)');
+    ctx.beginPath();ctx.arc(x,y,r*8,0,Math.PI*2);ctx.fillStyle=g;ctx.fill();
+    ctx.beginPath();ctx.arc(x,y,r,0,Math.PI*2);ctx.fillStyle='rgba(255,255,255,.98)';ctx.fill();
+  }
+  for(let i=0;i<30;i++){
+    const x=Math.random()*W,y=Math.random()*H;
+    ctx.strokeStyle='rgba(255,255,255,.18)';ctx.lineWidth=.7;
+    [[1,0],[0,1],[.7,.7],[-.7,.7]].forEach(([dx,dy])=>{
+      ctx.beginPath();ctx.moveTo(x-dx*18,y-dy*18);ctx.lineTo(x+dx*18,y+dy*18);ctx.stroke();
+    });
+  }
+
+  const skyTex=new THREE.CanvasTexture(cv);
+  skybox=new THREE.Mesh(
+    new THREE.SphereGeometry(250,48,48),
+    new THREE.MeshBasicMaterial({map:skyTex,side:THREE.BackSide})
+  );
+  scene.add(skybox);
+
+  [
+    {x:-38,y:20,z:-88,w:105,h:75,col:'rgba(80,20,200,', op:.18},
+    {x:48,y:14,z:-98,w:85,h:65,col:'rgba(10,145,215,',  op:.16},
+    {x:-14,y:-6,z:-78,w:75,h:55,col:'rgba(205,38,108,', op:.15},
+    {x:28,y:30,z:-108,w:95,h:70,col:'rgba(185,125,18,', op:.12},
+    {x:-52,y:10,z:-68,w:65,h:48,col:'rgba(28,205,158,', op:.13},
+  ].forEach(nd=>{
+    const nc=document.createElement('canvas');nc.width=512;nc.height=512;
+    const nc2=nc.getContext('2d');
+    for(let b=0;b<12;b++){
+      const bx=50+Math.random()*410,by=50+Math.random()*410,br=65+Math.random()*175;
+      const nbg=nc2.createRadialGradient(bx,by,0,bx,by,br);
+      nbg.addColorStop(0,nd.col+(nd.op*2)+')');
+      nbg.addColorStop(.4,nd.col+(nd.op*.9)+')');
+      nbg.addColorStop(1,nd.col+'0)');
+      nc2.fillStyle=nbg;nc2.fillRect(0,0,512,512);
+    }
+    const nm=new THREE.Mesh(
+      new THREE.PlaneGeometry(nd.w,nd.h),
+      new THREE.MeshBasicMaterial({map:new THREE.CanvasTexture(nc),transparent:true,depthWrite:false,side:THREE.DoubleSide,blending:THREE.AdditiveBlending})
+    );
+    nm.position.set(nd.x,nd.y,nd.z);
+    nm.userData.rotSpeed=(Math.random()-.5)*.00025;
+    scene.add(nm);nebulaLayers.push(nm);
+  });
+
+  for(let i=0;i<8;i++) spawnStar(i*3.2);
+}
+
+function spawnStar(delay){
+  const ss={
+    x:(Math.random()-.5)*130,y:14+Math.random()*32,z:-68+Math.random()*22,
+    vx:(Math.random()>.5?1:-1)*(.38+Math.random()*.55),vy:-.11-Math.random()*.13,
+    life:0,maxLife:65+Math.random()*45,delay:delay||0,active:false
+  };
+  const lg=new THREE.BufferGeometry().setFromPoints([
+    new THREE.Vector3(ss.x,ss.y,ss.z),
+    new THREE.Vector3(ss.x-1.2,ss.y+.4,ss.z)
+  ]);
+  ss.mesh=new THREE.Line(lg,new THREE.LineBasicMaterial({color:0xffffff,transparent:true,opacity:0}));
+  scene.add(ss.mesh);
+  shootingStars.push(ss);
+}
+
+// ═══════════════════════════════════════════════
+// PARTICLES
+// ═══════════════════════════════════════════════
+function makeParticles(){
+  [[800,120,60,80,0x3a6090,.5,.09],[200,40,20,30,0xc9a050,.4,.06],[300,150,80,100,0x9030c0,.3,.1]].forEach(([N,rx,ry,rz,col,op,sz])=>{
+    const pos=new Float32Array(N*3);
+    for(let i=0;i<N;i++){pos[i*3]=(Math.random()-.5)*rx;pos[i*3+1]=(Math.random()-.5)*ry;pos[i*3+2]=(Math.random()-.5)*rz;}
+    const g=new THREE.BufferGeometry();g.setAttribute('position',new THREE.BufferAttribute(pos,3));
+    scene.add(new THREE.Points(g,new THREE.PointsMaterial({color:col,size:sz,transparent:true,opacity:op})));
+  });
+}
+
+// ═══════════════════════════════════════════════
+// BUILDING
+// ═══════════════════════════════════════════════
+let zoneMarkers=[];
+let activeZone=null;
+
+function makeBuilding(){
+  building=new THREE.Group();
+  building.position.set(0,-5,-14);
+
+  const bMat=c=>new THREE.MeshPhongMaterial({color:c,shininess:60,specular:0x334466});
+  const glassMat=(c=0x1a3060,o=.78)=>new THREE.MeshPhongMaterial({color:c,shininess:140,specular:0x88ccff,transparent:true,opacity:o});
+  const goldMat=new THREE.MeshPhongMaterial({color:0xc9a050,shininess:100,specular:0xffd090,emissive:0x3a2800,emissiveIntensity:.35});
+  const concreteMat=bMat(0x0f1520);
+  const darkGlass=glassMat(0x0a1830,.82);
+
+  const plaza=new THREE.Mesh(new THREE.BoxGeometry(34,0.5,28),bMat(0x0a1018));
+  plaza.position.set(0,-.25,0);plaza.receiveShadow=true;building.add(plaza);
+
+  for(let x=-15;x<=15;x+=3){
+    const line=new THREE.Mesh(new THREE.BoxGeometry(.06,0.06,28),bMat(0x1a2535));
+    line.position.set(x,.28,0);building.add(line);
+  }
+  for(let z=-12;z<=12;z+=3){
+    const line=new THREE.Mesh(new THREE.BoxGeometry(34,.06,.06),bMat(0x1a2535));
+    line.position.set(0,.28,z);building.add(line);
+  }
+
+  const podium=new THREE.Mesh(new THREE.BoxGeometry(10,1.5,10),bMat(0x111c28));
+  podium.position.set(0,.75,0);podium.castShadow=true;podium.receiveShadow=true;building.add(podium);
+  const podRing=new THREE.Mesh(new THREE.BoxGeometry(10.4,.12,10.4),goldMat.clone());
+  podRing.position.set(0,1.5,0);building.add(podRing);
+
+  [[8,10,8,6.5],[7,8,7,11.5],[5.5,12,5.5,18]].forEach(([w,h,d,cy])=>{
+    const seg=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),darkGlass.clone());
+    seg.position.set(0,cy,0);seg.castShadow=true;building.add(seg);
+    for(let y=cy-h/2+1.5;y<cy+h/2;y+=3){
+      const fl=new THREE.Mesh(new THREE.BoxGeometry(w+.2,.1,d+.2),goldMat.clone());
+      fl.position.set(0,y,0);building.add(fl);
+    }
+    [[w/2,d/2],[-w/2,d/2],[w/2,-d/2],[-w/2,-d/2]].forEach(([cx,cz])=>{
+      const c=new THREE.Mesh(new THREE.BoxGeometry(.45,h,.45),bMat(0x162030));
+      c.position.set(cx,cy,cz);building.add(c);
+    });
+  });
+
+  const deckBase=new THREE.Mesh(new THREE.CylinderGeometry(5.5,4.8,1.5,24),bMat(0x1a2a3a));
+  deckBase.position.set(0,25.75,0);building.add(deckBase);
+  const deckFloor=new THREE.Mesh(new THREE.CylinderGeometry(5.4,5.4,.12,24),goldMat.clone());
+  deckFloor.position.set(0,26.6,0);building.add(deckFloor);
+  for(let i=0;i<20;i++){
+    const ang=(i/20)*Math.PI*2;
+    const post=new THREE.Mesh(new THREE.CylinderGeometry(.06,.06,.9,6),goldMat.clone());
+    post.position.set(Math.cos(ang)*5.1,27.1,Math.sin(ang)*5.1);building.add(post);
+  }
+  const outerRail=new THREE.Mesh(new THREE.TorusGeometry(5.1,.06,8,50),goldMat.clone());
+  outerRail.rotation.x=Math.PI/2;outerRail.position.y=27.55;building.add(outerRail);
+  const perch=new THREE.Mesh(new THREE.CylinderGeometry(.3,.5,1.2,8),goldMat.clone());
+  perch.position.set(2,27.7,0);building.add(perch);
+  const eagleLight=new THREE.PointLight(0xffcc44,1.2,12);eagleLight.position.set(0,27,0);building.add(eagleLight);
+
+  const spireBase=new THREE.Mesh(new THREE.CylinderGeometry(.5,.8,2,8),bMat(0x1e2a3a));
+  spireBase.position.set(0,28.5,0);building.add(spireBase);
+  const spire=new THREE.Mesh(new THREE.CylinderGeometry(.05,.3,5,8),goldMat.clone());
+  spire.position.set(0,31.5,0);building.add(spire);
+  const spinTip=new THREE.Mesh(new THREE.SphereGeometry(.3,12,12),new THREE.MeshBasicMaterial({color:0xffd060}));
+  spinTip.position.set(0,34.2,0);building.add(spinTip);
+  const tipLight=new THREE.PointLight(0xffd060,4,18);tipLight.position.set(0,34,0);building.add(tipLight);
+
+  const dish=new THREE.Mesh(new THREE.SphereGeometry(1.2,18,10,0,Math.PI*2,0,Math.PI*.55),
+    new THREE.MeshPhongMaterial({color:0x2a4a6a,side:THREE.DoubleSide,shininess:60,emissive:0x0a1a2a,emissiveIntensity:.3}));
+  dish.rotation.x=-Math.PI*.3;dish.position.set(3,29.5,0);dish.userData.spin=true;building.add(dish);
+  const dishArm=new THREE.Mesh(new THREE.CylinderGeometry(.06,.06,1.2,6),bMat(0x2a4060));
+  dishArm.position.set(3,28.7,0);building.add(dishArm);
+  const beam=new THREE.Mesh(new THREE.ConeGeometry(.05,10,8,1,true),
+    new THREE.MeshBasicMaterial({color:0x00eeff,transparent:true,opacity:.1,side:THREE.DoubleSide}));
+  beam.position.set(3,34,0);beam.userData.beam=true;building.add(beam);
+
+  const wingL=new THREE.Mesh(new THREE.BoxGeometry(6,8,6),glassMat(0x0d1a2a,.85));
+  wingL.position.set(-8.5,5.5,0);wingL.castShadow=true;building.add(wingL);
+  const wingLRoof=new THREE.Mesh(new THREE.BoxGeometry(6.4,.2,6.4),goldMat.clone());
+  wingLRoof.position.set(-8.5,9.6,0);building.add(wingLRoof);
+  for(let fy=0;fy<2;fy++)for(let fz=-1;fz<=1;fz++){
+    const dwin=new THREE.Mesh(new THREE.PlaneGeometry(.8,1.1),
+      new THREE.MeshBasicMaterial({color:0x102040,transparent:true,opacity:.9}));
+    dwin.position.set(-5.49,3.5+fy*3.2,fz*1.8);dwin.rotation.y=Math.PI/2;
+    dwin.userData.wp=Math.random()*Math.PI*2;building.add(dwin);
+  }
+  const owlLight=new THREE.PointLight(0x2040a0,.8,10);owlLight.position.set(-8.5,6,0);building.add(owlLight);
+  const bridgeL=new THREE.Mesh(new THREE.BoxGeometry(1.5,.3,2),bMat(0x162030));
+  bridgeL.position.set(-5,6,.0);building.add(bridgeL);
+
+  const wingR=new THREE.Mesh(new THREE.BoxGeometry(6,8,6),glassMat(0x1a1a08,.85));
+  wingR.position.set(8.5,5.5,0);wingR.castShadow=true;building.add(wingR);
+  const wingRRoof=new THREE.Mesh(new THREE.BoxGeometry(6.4,.2,6.4),goldMat.clone());
+  wingRRoof.position.set(8.5,9.6,0);building.add(wingRRoof);
+  for(let fy=0;fy<2;fy++)for(let fz=-1;fz<=1;fz++){
+    const gwin=new THREE.Mesh(new THREE.PlaneGeometry(.8,1.1),
+      new THREE.MeshBasicMaterial({color:0xffa020,transparent:true,opacity:.7}));
+    gwin.position.set(5.49,3.5+fy*3.2,fz*1.8);gwin.rotation.y=-Math.PI/2;
+    gwin.userData.wp=Math.random()*Math.PI*2;building.add(gwin);
+  }
+  const cmdLight=new THREE.PointLight(0xffaa00,1.2,12);cmdLight.position.set(8.5,6,0);building.add(cmdLight);
+  const bridgeR=new THREE.Mesh(new THREE.BoxGeometry(1.5,.3,2),bMat(0x162030));
+  bridgeR.position.set(5,6,0);building.add(bridgeR);
+
+  const aquaBase=new THREE.Mesh(new THREE.CylinderGeometry(4.5,5,1,24),bMat(0x091420));
+  aquaBase.position.set(0,.5,10);building.add(aquaBase);
+  const pool=new THREE.Mesh(new THREE.CylinderGeometry(3.8,3.8,.4,24),
+    new THREE.MeshPhongMaterial({color:0x0a4060,shininess:200,specular:0x44aaff,transparent:true,opacity:.85}));
+  pool.position.set(0,.75,10);building.add(pool);
+  const poolLight=new THREE.PointLight(0x0088cc,1.5,8);poolLight.position.set(0,1.5,10);poolLight.userData.poolLight=true;building.add(poolLight);
+  const poolRing=new THREE.Mesh(new THREE.TorusGeometry(3.9,.15,8,30),goldMat.clone());
+  poolRing.rotation.x=Math.PI/2;poolRing.position.set(0,.98,10);building.add(poolRing);
+  for(let b=0;b<12;b++){
+    const bub=new THREE.Mesh(new THREE.SphereGeometry(.05+Math.random()*.08,6,6),
+      new THREE.MeshBasicMaterial({color:0x44aaff,transparent:true,opacity:.5}));
+    bub.position.set((Math.random()-.5)*6,1.2+Math.random()*2,8+Math.random()*4);
+    bub.userData.bubbleIdx=b;bub.userData.bubbleSpeed=.3+Math.random()*.5;
+    building.add(bub);
+  }
+
+  const tunnelEntry=new THREE.Mesh(new THREE.CylinderGeometry(1.2,1.2,4,12),bMat(0x0a1420));
+  tunnelEntry.rotation.x=Math.PI/2;tunnelEntry.position.set(-5,1.5,-10);building.add(tunnelEntry);
+  const tunnelRing=new THREE.Mesh(new THREE.TorusGeometry(1.2,.1,8,20),goldMat.clone());
+  tunnelRing.position.set(-5,1.5,-8);building.add(tunnelRing);
+  const tunnelLight=new THREE.PointLight(0x800080,.6,6);tunnelLight.position.set(-5,1.5,-10);building.add(tunnelLight);
+
+  const archL=new THREE.Mesh(new THREE.CylinderGeometry(.25,.25,5,8),bMat(0x1e2a3a));
+  archL.position.set(-3.5,2.5,6);building.add(archL);
+  const archR=new THREE.Mesh(new THREE.CylinderGeometry(.25,.25,5,8),bMat(0x1e2a3a));
+  archR.position.set(3.5,2.5,6);building.add(archR);
+  const archTop=new THREE.Mesh(new THREE.TorusGeometry(3.5,.2,8,20,Math.PI),goldMat.clone());
+  archTop.rotation.z=Math.PI;archTop.position.set(0,5,6);building.add(archTop);
+  const signBeam=new THREE.Mesh(new THREE.BoxGeometry(7.2,.1,.1),goldMat.clone());
+  signBeam.position.set(0,5.1,6.1);building.add(signBeam);
+  [-3,0,3].forEach(x=>{
+    const el=new THREE.PointLight(0xffd080,.6,5);el.position.set(x,6,6);building.add(el);
+    const lb=new THREE.Mesh(new THREE.SphereGeometry(.12,8,8),new THREE.MeshBasicMaterial({color:0xffd080}));
+    lb.position.set(x,6,6);building.add(lb);
+  });
+
+  [[-13,0],[13,0]].forEach(([x,z])=>{
+    const hall=new THREE.Mesh(new THREE.BoxGeometry(3,3.5,8),bMat(0x131d28));
+    hall.position.set(x,1.75,z);hall.castShadow=true;building.add(hall);
+    const hRoof=new THREE.Mesh(new THREE.BoxGeometry(3.4,.15,8.4),goldMat.clone());
+    hRoof.position.set(x,3.55,z);building.add(hRoof);
+    const hLight=new THREE.PointLight(0x8090b0,.5,8);hLight.position.set(x,2,z);building.add(hLight);
+  });
+
+  const wCols=[0xfff0a0,0xa0d0ff,0x80ffb0,0xffaaaa];
+  for(let floor=0;floor<6;floor++){
+    for(let side=0;side<4;side++){
+      for(let col2=-1;col2<=1;col2++){
+        const ang=side*Math.PI*.5;
+        const ww=new THREE.Mesh(new THREE.PlaneGeometry(.75,.95),
+          new THREE.MeshBasicMaterial({color:wCols[Math.floor(Math.random()*4)],transparent:true,opacity:.6}));
+        const dist=4.06,y=3+floor*3.6;
+        ww.position.set(Math.sin(ang)*dist+col2*.9*Math.cos(ang),y,Math.cos(ang)*dist-col2*.9*Math.sin(ang));
+        ww.rotation.y=ang;ww.userData.wp=Math.random()*Math.PI*2;
+        building.add(ww);
+      }
+    }
+  }
+
+  const zones=[
+    {id:'eagle', label:'Observation Deck', pos:[0,27.5,0], color:0xffcc44, animal:'🦅'},
+    {id:'owl',   label:'Analysis Rooms',   pos:[-8.5,2,0],  color:0x4466ff, animal:'🦉'},
+    {id:'cmd',   label:'Command Hub',      pos:[8.5,2,0],   color:0xffaa00, animal:'🐝🐦'},
+    {id:'pool',  label:'Aquatic Zone',     pos:[0,1,10],    color:0x00aaff, animal:'🐬🐙'},
+    {id:'tunnel',label:'Tunnel Network',   pos:[-5,1,-10],  color:0xaa00ff, animal:'🐙'},
+    {id:'halls', label:'Reinforced Halls', pos:[-13,1,0],   color:0x8899aa, animal:'🐘'},
+  ];
+
+  zones.forEach(z=>{
+    const ringGeo=new THREE.TorusGeometry(1.4,.06,8,32);
+    const ringMat=new THREE.MeshBasicMaterial({color:z.color,transparent:true,opacity:.7});
+    const ring=new THREE.Mesh(ringGeo,ringMat);
+    ring.rotation.x=Math.PI/2;
+    ring.position.set(z.pos[0],z.pos[1]+.1,z.pos[2]);
+    ring.userData.zoneId=z.id;ring.userData.zoneData=z;ring.userData.isZoneMarker=true;
+    ring.userData.baseOpacity=.7;
+    building.add(ring);
+    zoneMarkers.push(ring);
+
+    const discGeo=new THREE.CircleGeometry(1.3,32);
+    const discMat=new THREE.MeshBasicMaterial({color:z.color,transparent:true,opacity:.08,side:THREE.DoubleSide});
+    const disc=new THREE.Mesh(discGeo,discMat);
+    disc.rotation.x=-Math.PI/2;
+    disc.position.set(z.pos[0],z.pos[1]+.12,z.pos[2]);
+    disc.userData.isDisc=true;disc.userData.discColor=z.color;
+    building.add(disc);
+
+    const sph=new THREE.Mesh(new THREE.SphereGeometry(.18,10,10),
+      new THREE.MeshBasicMaterial({color:z.color}));
+    sph.position.set(z.pos[0],z.pos[1]+.8,z.pos[2]);
+    sph.userData.labelSphere=true;sph.userData.zoneData=z;sph.userData.zoneId=z.id;
+    building.add(sph);
+  });
+
+  const gnd=new THREE.Mesh(new THREE.PlaneGeometry(120,80),new THREE.MeshPhongMaterial({color:0x050b14,shininess:5}));
+  gnd.rotation.x=-Math.PI/2;gnd.position.y=-.55;gnd.receiveShadow=true;building.add(gnd);
+  building.add(new THREE.GridHelper(80,40,0x0d1828,0x081018));
+
+  scene.add(building);
+}
+
+// ═══════════════════════════════════════════════
+// LOOP
+// ═══════════════════════════════════════════════
+function loop(){
+  requestAnimationFrame(loop);
+  const t=clock.getElapsedTime();
+
+  controls.update();
+
+  animalGroups.forEach((a,i)=>{
+    const ph=a.userData.phase;
+    a.position.y=a.userData.baseY + Math.sin(t*.7+ph)*.3;
+
+    if(a.userData.mixer) a.userData.mixer.update(0.016);
+
+    if(!controls.isDragging && a.userData.model){
+      a.userData.model.rotation.y+=.005;
+    }
+
+    if(a.userData.halo) a.userData.halo.scale.setScalar(.92+Math.sin(t*2+ph)*.08);
+
+    const sl=SLIDES[slide];
+    const isActive=sl.t==='animal'&&sl.i===i;
+    const isHov=hovered===a;
+    const tl=isActive||isHov?3.5:1.5;
+    if(a.userData.light) a.userData.light.intensity+=(tl-a.userData.light.intensity)*.08;
+    const ts=isActive?1.4:isHov?1.15:1.0;
+    a.scale.lerp(new THREE.Vector3(ts,ts,ts),.07);
+  });
+
+  if(building) building.children.forEach(ch=>{
+    if(ch.userData.wp!==undefined) ch.material.opacity=.15+Math.abs(Math.sin(t*.9+ch.userData.wp))*.55;
+    if(ch.userData.spin) ch.rotation.y+=.012;
+    if(ch.userData.beam){ch.material.opacity=.04+Math.abs(Math.sin(t*.5))*.1;ch.rotation.y+=.012;}
+    if(ch.userData.poolLight) ch.intensity=1.2+Math.sin(t*2.5)*.4;
+    if(ch.userData.bubbleIdx!==undefined){
+      ch.position.y+=ch.userData.bubbleSpeed*.01;
+      ch.material.opacity=.4+Math.sin(t*2+ch.userData.bubbleIdx)*.2;
+      if(ch.position.y>3.5) ch.position.y=1.2;
+    }
+    if(ch.userData.isZoneMarker){
+      const isActive=activeZone===ch.userData.zoneId;
+      ch.material.opacity=isActive?.9:.4+Math.sin(t*2+ch.userData.zoneId?.length||0)*.3;
+      const sc=isActive?1.15:.95+Math.sin(t*1.8)*.05;
+      ch.scale.setScalar(sc);
+    }
+    if(ch.userData.isDisc){
+      ch.material.opacity=.05+Math.abs(Math.sin(t*1.5))*.08;
+    }
+    if(ch.userData.labelSphere){
+      ch.position.y+=Math.sin(t*2+ch.userData.zoneId?.length||0)*.005;
+    }
+  });
+
+  if(skybox) skybox.rotation.y+=.00008;
+  nebulaLayers.forEach(nl=>{nl.rotation.z+=nl.userData.rotSpeed;nl.lookAt(cam.position);});
+
+  shootingStars.forEach(ss=>{
+    if(!ss.active){ss.delay-=.016;if(ss.delay<=0)ss.active=true;return;}
+    ss.life++;
+    const prog=ss.life/ss.maxLife;
+    const op=prog<.2?prog/.2:prog>.7?(1-prog)/.3:1;
+    ss.mesh.geometry.setFromPoints([new THREE.Vector3(ss.x+ss.vx*ss.life,ss.y+ss.vy*ss.life,ss.z),new THREE.Vector3(ss.x+ss.vx*(ss.life-14),ss.y+ss.vy*(ss.life-14),ss.z)]);
+    ss.mesh.geometry.computeBoundingSphere();
+    ss.mesh.material.opacity=op*.85;
+    if(ss.life>=ss.maxLife){ss.x=(Math.random()-.5)*120;ss.y=15+Math.random()*30;ss.z=-70+Math.random()*20;ss.vx=(Math.random()>.5?1:-1)*(.4+Math.random()*.5);ss.vy=-.12-Math.random()*.12;ss.maxLife=60+Math.random()*50;ss.life=0;ss.delay=6+Math.random()*18;ss.active=false;ss.mesh.material.opacity=0;}
+  });
+
+  renderer.render(scene,cam);
+}
+
+// ═══════════════════════════════════════════════
+// INTERACTION
+// ═══════════════════════════════════════════════
+function onMove(e){
+  mouse.x=(e.clientX/innerWidth)*2-1;
+  mouse.y=-(e.clientY/innerHeight)*2+1;
+  raycaster.setFromCamera(mouse,cam);
+  const tip=document.getElementById('tip');
+
+  const meshes=[];
+  animalGroups.forEach(a=>a.traverse(ch=>{if(ch.isMesh)meshes.push(ch);}));
+  const hits=raycaster.intersectObjects(meshes,false);
+  if(hits.length){
+    let obj=hits[0].object;
+    while(obj.parent&&!obj.parent.userData?.isAnimal)obj=obj.parent;
+    if(obj.parent?.userData?.isAnimal){
+      hovered=obj.parent;
+      document.body.style.cursor='pointer';
+      const m=TEAM[obj.parent.userData.idx];
+      tip.style.display='block';
+      tip.style.left=(e.clientX+14)+'px';
+      tip.style.top=(e.clientY-8)+'px';
+      tip.textContent=m.name+' — '+m.role;
+      return;
+    }
+  }
+
+  if(SLIDES[slide].t==='workspace' && building.visible){
+    const zoneMeshes=[];
+    building.traverse(ch=>{if(ch.userData.isZoneMarker||ch.userData.labelSphere)zoneMeshes.push(ch);});
+    const zhits=raycaster.intersectObjects(zoneMeshes,false);
+    if(zhits.length){
+      const zd=zhits[0].object.userData.zoneData;
+      if(zd){
+        hovered=null;
+        document.body.style.cursor='pointer';
+        const info=ZONE_INFO[zd.id];
+        tip.style.display='block';
+        tip.style.left=(e.clientX+14)+'px';
+        tip.style.top=(e.clientY-8)+'px';
+        tip.textContent=(info?info.title:zd.label)+' — click to inspect';
+        return;
+      }
+    }
+  }
+
+  hovered=null;document.body.style.cursor='default';tip.style.display='none';
+}
+
+function onClick(){
+  if(hovered){ go(2+hovered.userData.idx); return; }
+  if(SLIDES[slide].t==='workspace' && building.visible){
+    raycaster.setFromCamera(mouse,cam);
+    const zoneMeshes=[];
+    building.traverse(ch=>{ if(ch.userData.isZoneMarker||ch.userData.labelSphere) zoneMeshes.push(ch); });
+    const hits=raycaster.intersectObjects(zoneMeshes,false);
+    if(hits.length){
+      const zd=hits[0].object.userData.zoneData;
+      if(zd) showZoneInfo(zd);
+    }
+  }
+}
+
+function onResize(){
+  cam.aspect=innerWidth/innerHeight;
+  cam.updateProjectionMatrix();
+  renderer.setSize(innerWidth,innerHeight);
+}
+
+// ═══════════════════════════════════════════════
+// SLIDES
+// ═══════════════════════════════════════════════
+function go(idx){
+  slide=Math.max(0,Math.min(SLIDES.length-1,idx));
+  renderSlide();
+  updateDots();
+  document.getElementById('slide-info').textContent=String(slide+1).padStart(2,'0')+' / '+String(SLIDES.length).padStart(2,'0');
+}
+
+function renderSlide(){
+  const sl=SLIDES[slide];
+  const panel=document.getElementById('panel');
+  const members=document.getElementById('members');
+  const titleOver=document.getElementById('title-over');
+
+  panel.classList.remove('show');members.classList.remove('show');
+  titleOver.style.opacity='0';titleOver.style.pointerEvents='none';
+  animalGroups.forEach(a=>a.visible=true);
+  building.visible=true;
+
+  if(sl.t==='title'){
+    controls.target.set(0,1,0);controls.minDistance=10;controls.maxDistance=40;
+    titleOver.style.opacity='1';building.position.set(0,-5,-14);
+  }
+  else if(sl.t==='team'){
+    controls.target.set(0,0,0);building.visible=false;
+    setTimeout(()=>{members.classList.add('show');buildMList();},100);
+    showPanel(teamHTML());
+  }
+  else if(sl.t==='animal'){
+    const a=animalGroups[sl.i];
+    controls.target.lerp(new THREE.Vector3(a.position.x,a.position.y,a.position.z),.5);
+    controls.minDistance=3;controls.maxDistance=12;
+    building.visible=false;
+    showPanel(animalHTML(TEAM[sl.i]));
+    buildMList(sl.i);
+    setTimeout(()=>members.classList.add('show'),100);
+  }
+  else if(sl.t==='hiring'){
+    controls.target.set(0,1,0);controls.minDistance=8;controls.maxDistance=30;
+    building.visible=false;showPanel(hiringHTML());
+  }
+  else if(sl.t==='workspace'){
+    animalGroups.forEach(a=>a.visible=false);
+    building.visible=true;
+    building.position.set(0,-5,-3);
+    controls.target.set(0,8,0);
+    controls.minDistance=8;controls.maxDistance=50;
+    controls.autoRotate=true;controls.autoRotateSpeed=0.3;
+    showPanel(workspaceHTML());
+    activeZone=null;
+  }
+  else if(sl.t==='weaknesses'){controls.target.set(0,1,0);building.visible=false;showPanel(weaknessHTML());}
+  else if(sl.t==='future'){controls.target.set(0,1,0);building.visible=false;showPanel(futureHTML());}
+  else if(sl.t==='expansion'){
+    controls.target.set(0,2,0);controls.minDistance=12;controls.maxDistance=45;
+    building.visible=false;showPanel(expansionHTML());
+  }
+  else if(sl.t==='conclusion'){
+    controls.target.set(0,2,0);controls.minDistance=12;controls.maxDistance=40;
+    building.visible=true;building.position.set(0,-5,-14);showPanel(conclusionHTML());
+  }
+}
+
+function showPanel(html){
+  document.getElementById('pcontent').innerHTML=html;
+  setTimeout(()=>document.getElementById('panel').classList.add('show'),80);
+}
+
+const ZONE_INFO={
+  eagle:{
+    title:'Observation Deck',
+    sub:'Eagle — Surveillance Leader',
+    desc:'360° rooftop platform at the peak of the tower. Eagle monitors all active crisis zones simultaneously from here, with unobstructed sightlines in every direction.',
+    features:['Reinforced blast-proof glass','Real-time satellite link','Night-vision array','Emergency extraction point'],
+    col:'#ffcc44'
+  },
+  owl:{
+    title:'Analysis Rooms',
+    sub:'Owl — Intelligence Analyst',
+    desc:'Soundproofed, darkened chambers on the left wing. Temperature-controlled and electromagnetically isolated. Owl processes raw intelligence data undisturbed.',
+    features:['Zero-noise isolation','Infrared lighting only','Quantum-encrypted terminals','24/7 surveillance feeds'],
+    col:'#4466ff'
+  },
+  cmd:{
+    title:'Central Command Hub',
+    sub:'Bee + Crow — Logistics & Problem Solving',
+    desc:'The golden-lit heart of the bureau on the right wing. Every live operation is coordinated from here. Bee manages communications; Crow handles real-time tactical decisions.',
+    features:['7 simultaneous comms channels','Holographic situation map','AI-assisted threat analysis','Direct line to all 7 team members'],
+    col:'#ffaa00'
+  },
+  pool:{
+    title:'Aquatic Operations Zone',
+    sub:'Dolphin + Octopus — Field Specialists',
+    desc:'Underground pool complex beneath the front plaza. Dolphin conducts acoustic negotiations from here. Octopus uses it for hydration and stealth mission prep.',
+    features:['Saltwater pool — 8m deep','Acoustic comms system','Underwater egress tunnel','Pressurised decompression chamber'],
+    col:'#00aaff'
+  },
+  tunnel:{
+    title:'Tunnel Network',
+    sub:'Octopus — Infiltration Specialist',
+    desc:'A classified network of tight passages running beneath the entire HQ. Octopus uses these for stealth training, rapid transit, and accessing otherwise unreachable spaces.',
+    features:['42 access points across HQ','Pressure-sensitive floor sensors','Purple UV emergency lighting','Connects to aquatic zone'],
+    col:'#aa00ff'
+  },
+  halls:{
+    title:'Reinforced Halls',
+    sub:'Elephant — Operations Coordinator',
+    desc:'Extra-wide, structurally reinforced corridors along the outer wings. Load-bearing titanium frames support Elephant\'s movement throughout the building safely.',
+    features:['4m wide corridors','Titanium-reinforced flooring','Pressure-dampened surfaces','Direct access to all zones'],
+    col:'#8899aa'
+  }
+};
+
+function showZoneInfo(zd){
+  activeZone=zd.id;
+  const info=ZONE_INFO[zd.id];
+  if(!info) return;
+
+  const camTargets={
+    eagle:  {target:[0,22,0],  dist:[4,35]},
+    owl:    {target:[-8,6,0],  dist:[3,16]},
+    cmd:    {target:[8,6,0],   dist:[3,16]},
+    pool:   {target:[0,2,10],  dist:[3,18]},
+    tunnel: {target:[-5,2,-10],dist:[3,14]},
+    halls:  {target:[-13,3,0], dist:[2,14]},
+  };
+  const ct = camTargets[zd.id] || {target:[0,8,0],dist:[4,30]};
+  const worldPos = new THREE.Vector3(ct.target[0],ct.target[1],ct.target[2]).add(building.position);
+  controls.target.set(worldPos.x, worldPos.y, worldPos.z);
+  controls.minDistance=ct.dist[0];
+  controls.maxDistance=ct.dist[1];
+  controls.autoRotate=true;
+  controls.autoRotateSpeed=0.5;
+
+  document.getElementById('pcontent').innerHTML=`
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:14px">
+      <div style="width:10px;height:10px;border-radius:50%;background:${info.col};box-shadow:0 0 12px ${info.col};flex-shrink:0"></div>
+      <h2 style="font-size:1.1em;margin:0">${info.title}</h2>
+    </div>
+    <span class="role" style="border-color:${info.col}50;color:${info.col}">${info.sub}</span>
+    <div class="bar" style="background:${info.col};margin-top:14px"></div>
+    <p style="font-size:.82em">${info.desc}</p>
+    <span class="label">Zone Features</span>
+    <div style="display:flex;flex-direction:column;gap:6px;margin-bottom:16px">
+      ${info.features.map(f=>`
+        <div style="display:flex;gap:8px;align-items:flex-start;padding:6px 10px;background:${info.col}08;border:1px solid ${info.col}20;border-radius:4px">
+          <span style="color:${info.col};font-size:.75em;margin-top:2px;flex-shrink:0">◆</span>
+          <span style="font-family:'Crimson Pro',serif;font-size:.8em;color:rgba(230,215,185,.82);line-height:1.4">${f}</span>
+        </div>`).join('')}
+    </div>
+    <button onclick="resetWorkspace()"
+      style="width:100%;padding:8px;background:rgba(201,160,80,.08);border:1px solid rgba(201,160,80,.25);
+             color:#c9a050;font-family:'Cinzel',serif;font-size:.5em;letter-spacing:.15em;
+             text-transform:uppercase;cursor:pointer;border-radius:4px;transition:all .2s"
+      onmouseover="this.style.background='rgba(201,160,80,.18)'"
+      onmouseout="this.style.background='rgba(201,160,80,.08)'">
+      ← All Zones
+    </button>`;
+}
+
+function focusZone(zoneId){
+  const zd = zoneMarkers.find(m=>m.userData.zoneId===zoneId)?.userData.zoneData;
+  if(zd) showZoneInfo(zd);
+  else {
+    const info = ZONE_INFO[zoneId];
+    if(info) showZoneInfo({id:zoneId, pos:[0,5,0], color:0xffffff, label:info.title});
+  }
+}
+
+function resetWorkspace(){
+  activeZone=null;
+  controls.target.set(0,8,0);
+  controls.autoRotate=true;controls.autoRotateSpeed=0.3;
+  showPanel(workspaceHTML());
+}
+
+function buildMList(active=-1){
+  document.getElementById('mlist').innerHTML=TEAM.map((m,i)=>`<div class="mbtn${i===active?' act':''}" onclick="go(${2+i})"><span class="mico">${m.emoji}</span><div><div class="mname">${m.name}</div><div class="mrole">${m.role}</div></div></div>`).join('');
+}
+
+// ═══════════════════════════════════════════════
+// HTML BUILDERS
+// ═══════════════════════════════════════════════
+
+function teamHTML(){return`<h2>The Starting<br>Lineup</h2><div class="bar"></div><p>Seven specialists. Seven unique strengths. One mission.</p><p style="font-size:.82em;color:rgba(201,160,80,.5);font-style:italic">Click any 3D animal or use the list to meet each specialist.</p>`;}
+
+function animalHTML(m){return`<div style="font-size:3em;line-height:1;margin-bottom:8px">${m.emoji}</div><h2>${m.name}</h2><span class="role">${m.role}</span><div class="bar"></div><span class="label">Natural Strengths</span><div class="pills">${m.strengths.map(s=>`<span class="pill">${s}</span>`).join('')}</div><span class="label">Mission</span><p>${m.mission}</p><span class="label">Why This Animal?</span><p>${m.why}</p>`;}
+
+function hiringHTML(){return`<h2>Hiring<br>Procedure</h2><div class="bar"></div><p>Rigorous selection ensuring only the most capable specialists join.</p><span class="label">Step 01</span><p>Simulated crisis scenarios — hostage negotiations, infiltrations, emergency comms.</p><span class="label">Step 02</span><p>Evaluated on communication under pressure · problem-solving · teamwork.</p><span class="label">Step 03</span><p>No two animals fill the same niche — overlapping weaknesses explicitly avoided.</p><span class="label">Step 04</span><p>All seven approved only after proving they improve overall team performance.</p>`;}
+
+function workspaceHTML(){
+  return`
+  <h2>HQ Workspace<br>Design</h2>
+  <div class="bar"></div>
+  <p style="font-size:.78em;color:rgba(201,160,80,.5);font-style:italic;margin-bottom:16px">
+    🖱 Drag to orbit &nbsp;·&nbsp; Scroll to zoom<br>
+    Click any glowing zone to inspect it
+  </p>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-bottom:4px">
+    ${[
+      {id:'eagle', col:'#ffcc44', icon:'🦅', name:'Obs. Deck',   sub:'Eagle · Top floor'},
+      {id:'owl',   col:'#4488ff', icon:'🦉', name:'Analysis',    sub:'Owl · Left wing'},
+      {id:'cmd',   col:'#ffaa00', icon:'🐝', name:'Command Hub', sub:'Bee+Crow · Right'},
+      {id:'pool',  col:'#00aaff', icon:'🐬', name:'Aquatic Zone',sub:'Dolphin+Octopus'},
+      {id:'tunnel',col:'#cc44ff', icon:'🐙', name:'Tunnels',     sub:'Octopus · Below'},
+      {id:'halls', col:'#8899bb', icon:'🐘', name:'Wide Halls',  sub:'Elephant · Outer'},
+    ].map(z=>`
+      <div onclick="focusZone('${z.id}')"
+        style="padding:9px 10px;border-radius:6px;border:1px solid ${z.col}30;
+               background:${z.col}0a;cursor:pointer;transition:all .18s"
+        onmouseover="this.style.background='${z.col}20';this.style.borderColor='${z.col}80'"
+        onmouseout="this.style.background='${z.col}0a';this.style.borderColor='${z.col}30'">
+        <span style="font-size:1.4em;display:block;margin-bottom:4px">${z.icon}</span>
+        <div style="font-family:Cinzel,serif;font-size:.55em;color:${z.col};letter-spacing:.09em;text-transform:uppercase;font-weight:600;margin-bottom:2px">${z.name}</div>
+        <div style="font-family:'Crimson Pro',serif;font-size:.68em;color:rgba(230,215,185,.35)">${z.sub}</div>
+      </div>
+    `).join('')}
+  </div>`;
+}
+
+// ── WEAKNESSES — now includes all 7 animals including Honeybee ──
+function weaknessHTML(){
+  return`<h2>Weaknesses<br>&amp; Solutions</h2><div class="bar"></div>
+  <p>We don't ignore weaknesses — we design around them.</p>
+  <table class="wtable">
+    <thead><tr><th>Member</th><th>Weakness</th><th>Solution</th></tr></thead>
+    <tbody>
+      <tr><td>🐘 Elephant</td><td class="rd">Too large for tight spaces</td><td class="gn">Octopus covers confined ops</td></tr>
+      <tr><td>🦉 Owl</td><td class="rd">Less effective daytime</td><td class="gn">Eagle covers day shifts</td></tr>
+      <tr><td>🐙 Octopus</td><td class="rd">Needs water long-term</td><td class="gn">Aquatic HQ zones built in</td></tr>
+      <tr><td>🐬 Dolphin</td><td class="rd">Limited land mobility</td><td class="gn">Remote audio link from pool</td></tr>
+      <tr><td>🐦 Crow</td><td class="rd">Small size limits authority</td><td class="gn">Backed by Elephant in-person</td></tr>
+      <tr><td>🦅 Eagle</td><td class="rd">Poor close-range precision</td><td class="gn">Owl handles micro-surveillance</td></tr>
+      <tr><td>🐝 Honeybee</td><td class="rd">Tiny — critically vulnerable in the field</td><td class="gn">Strictly HQ-based; never deployed to hostile zones</td></tr>
+    </tbody>
+  </table>`;
+}
+
+// ── FUTURE — rejected animals section ──
+function futureHTML(){
+  return`<h2>Future Hire<br>&amp; Rejected</h2><div class="bar"></div>
+  <div class="hcard hy">
+    <div class="ht">✦ Future Hire — If Funded</div>
+    <div class="hn2">🦜 Parrot — Linguistic &amp; Cultural Liaison Officer</div>
+    <div class="hd">The parrot possesses complex vocal mimicry and rapidly learns language patterns. To negotiate global peace treaties, it is essential to speak all languages with precision. The parrot reproduces voice nuances and dialects to ensure diplomatic messages are conveyed exactly — eliminating misunderstanding and facilitating de-escalation across cultural barriers.</div>
+  </div>
+  <div class="hcard hn">
+    <div class="ht">✕ Do Not Hire — Banned</div>
+    <div class="hn2">🦡 Honey Badger — Rejected</div>
+    <div class="hd">Although courageous, the honey badger is completely fearless and relentless — it ignores pain and charges forward regardless of obstacles. Diplomacy requires finesse, patience, and restraint. A honey badger does not listen, does not negotiate, and attacks head-on without considering consequences. In a high-stakes crisis, its aggression would instantly turn a peace attempt into a violent confrontation. The complete opposite of what this bureau requires.</div>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════
+// ── EXPANSION SLIDE — Global Branch Offices ──
+// ═══════════════════════════════════════════════
+function expansionHTML(){
+  return`
+  <h2>Global Branch<br>Offices</h2>
+  <div class="bar"></div>
+  <p>As demand for specialised crisis intervention grows internationally, the Bureau has established a structured programme of regional offices, each staffed by a dedicated subset of specialists selected for local operational requirements.</p>
+
+  <span class="label">Established Offices</span>
+  <div style="display:flex;flex-direction:column;gap:7px;margin-bottom:16px">
+    ${[
+      {flag:'🌍', region:'East Africa Regional Office', city:'Nairobi, Kenya', lead:'Eagle · Elephant', mandate:'Monitoring cross-border hostage situations and wildlife-corridor conflict zones. Primary focus on ground-level coordination with local authorities.'},
+      {flag:'🌏', region:'South-East Asia Regional Office', city:'Singapore', lead:'Dolphin · Octopus', mandate:'Coastal and maritime crisis response across island-nation disputes. Aquatic capabilities are critical in this jurisdiction.'},
+      {flag:'🌎', region:'South America Regional Office', city:'Bogotá, Colombia', lead:'Crow · Octopus', mandate:'Dense-terrain infiltration and counter-hostage operations. Crow leads adaptive problem-solving in rapidly evolving field scenarios.'},
+      {flag:'🧊', region:'Arctic Monitoring Outpost', city:'Tromsø, Norway', lead:'Owl · Eagle', mandate:'Extreme-environment remote surveillance. Continuous monitoring of geopolitical tensions in polar regions with minimal field exposure.'},
+      {flag:'🌐', region:'Central Coordination Office', city:'Geneva, Switzerland', lead:'Bee · Dolphin', mandate:'Global communications hub and inter-office liaison. Manages cross-branch intelligence sharing and treaty facilitation at the diplomatic level.'},
+    ].map(b=>`
+      <div style="padding:10px 12px;border-radius:6px;border:1px solid rgba(201,160,80,.16);background:rgba(201,160,80,.04)">
+        <div style="display:flex;align-items:center;gap:8px;margin-bottom:5px">
+          <span style="font-size:1.1em">${b.flag}</span>
+          <div>
+            <div style="font-family:Cinzel,serif;font-size:.56em;color:#c9a050;letter-spacing:.09em;text-transform:uppercase">${b.region}</div>
+            <div style="font-family:'Crimson Pro',serif;font-size:.68em;color:rgba(201,160,80,.4);letter-spacing:.06em">${b.city} &nbsp;·&nbsp; Lead: ${b.lead}</div>
+          </div>
+        </div>
+        <div style="font-family:'Crimson Pro',serif;font-size:.76em;color:rgba(230,215,185,.65);line-height:1.55;padding-left:2px">${b.mandate}</div>
+      </div>`).join('')}
+  </div>
+
+  <span class="label">Operational Principles</span>
+  <div style="display:flex;flex-direction:column;gap:4px">
+    ${[
+      'Each branch operates under the authority of the Central Coordination Office in Geneva.',
+      'Specialist assignments are rotated on a 6-month basis to prevent operational fatigue.',
+      'All branches share a single encrypted intelligence network managed by Honeybee.',
+      'No branch operates unilaterally — all field decisions require HQ authorisation.',
+    ].map(p=>`
+      <div style="display:flex;gap:8px;align-items:flex-start;padding:5px 0;border-bottom:1px solid rgba(255,255,255,.04)">
+        <span style="color:rgba(201,160,80,.5);font-size:.7em;margin-top:3px;flex-shrink:0">◆</span>
+        <span style="font-family:'Crimson Pro',serif;font-size:.76em;color:rgba(230,215,185,.6);line-height:1.5">${p}</span>
+      </div>`).join('')}
+  </div>`;
+}
+
+// ── CONCLUSION — professional & formal ──
+function conclusionHTML(){
+  return`
+  <h2>Assessment<br>&amp; Readiness</h2>
+  <div class="bar"></div>
+  <p>Following a comprehensive review of team composition, operational coverage, and strategic capability, the Bureau is assessed as fully mission-ready for deployment at local, national, and international scale.</p>
+
+  <span class="label">Core Capabilities Confirmed</span>
+  <div style="display:flex;flex-direction:column;gap:5px;margin-bottom:16px">
+    ${[
+      ['Intelligence Gathering','Continuous, multi-spectrum surveillance maintained by Owl and Eagle across all operational hours.'],
+      ['Crisis Negotiation','Dolphin leads all primary negotiations, supported by Elephant\'s strategic memory and Crow\'s adaptive problem-solving.'],
+      ['Stealth &amp; Infiltration','Octopus provides unmatched access to restricted environments without detection.'],
+      ['Logistics &amp; Coordination','Honeybee ensures all seven specialists operate as a single, precision-coordinated unit.'],
+      ['International Reach','Five regional offices — Geneva, Nairobi, Singapore, Bogotá, Tromsø — extend full coverage across all major geopolitical zones.'],
+    ].map(([nm,dc])=>`
+      <div style="padding:8px 12px;border-radius:5px;border:1px solid rgba(201,160,80,.14);background:rgba(201,160,80,.04)">
+        <div style="font-family:Cinzel,serif;font-size:.52em;letter-spacing:.12em;text-transform:uppercase;color:#c9a050;margin-bottom:3px">${nm}</div>
+        <div style="font-family:'Crimson Pro',serif;font-size:.78em;color:rgba(230,215,185,.7);line-height:1.5">${dc}</div>
+      </div>`).join('')}
+  </div>
+
+  <span class="label">Structural Integrity</span>
+  <div class="vgrid" style="margin-bottom:16px">
+    <div class="vcard"><span class="vi">7</span><span class="vl">Specialists</span></div>
+    <div class="vcard"><span class="vi">0</span><span class="vl">Overlapping Gaps</span></div>
+    <div class="vcard"><span class="vi">5</span><span class="vl">Global Offices</span></div>
+    <div class="vcard"><span class="vi">24/7</span><span class="vl">Operational Cover</span></div>
+  </div>
+
+  <div style="border-top:1px solid rgba(201,160,80,.2);padding-top:12px">
+    <p style="font-size:.8em;font-style:italic;color:rgba(201,160,80,.55);line-height:1.85;margin:0">
+      "The Bureau's composition reflects a deliberate and evidence-based approach to crisis resolution — one in which each specialist's natural capabilities address a precise operational requirement, and no capability exists in isolation."
+    </p>
+    <div style="font-family:'Cinzel',serif;font-size:.46em;letter-spacing:.2em;color:rgba(201,160,80,.28);text-transform:uppercase;margin-top:10px;text-align:right">
+      — Crisis Negotiation &amp; Diplomacy Bureau · Official Assessment
+    </div>
+  </div>`;
+}
+
+// ═══════════════════════════════════════════════
+// NAV HELPERS
+// ═══════════════════════════════════════════════
+function buildDots(){document.getElementById('dots').innerHTML=SLIDES.map((_,i)=>`<div class="dot${i===0?' on':''}" onclick="go(${i})"></div>`).join('');}
+function updateDots(){document.querySelectorAll('.dot').forEach((d,i)=>d.classList.toggle('on',i===slide));}
+
+document.getElementById('bnext').onclick=()=>go(slide+1);
+document.getElementById('bprev').onclick=()=>go(slide-1);
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key===' ')go(slide+1);if(e.key==='ArrowLeft')go(slide-1);});
+let tx=null;
+document.addEventListener('touchstart',e=>{tx=e.touches[0].clientX;});
+document.addEventListener('touchend',e=>{if(tx===null)return;const dx=e.changedTouches[0].clientX-tx;if(Math.abs(dx)>50){dx<0?go(slide+1):go(slide-1);}tx=null;});
+addEventListener('resize',onResize);
+
+init();
+</script>
+</body>
+</html>
